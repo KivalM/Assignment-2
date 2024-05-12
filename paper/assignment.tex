@@ -1,0 +1,124 @@
+\documentclass{article}
+\usepackage{biblatex}
+\usepackage{xcolor}
+\usepackage[section]{placeins}
+\usepackage{graphicx}
+\usepackage{lipsum}% Used for dummy text.
+
+\begin{document}
+
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+
+        \textbf{ COMP703 Assignment 2 - Comparison of LSTM and GRU}
+        \vspace{0.5cm}
+
+        \textbf{Kival Mahadew - 221001688}
+        \vfill
+        \vspace{0.8cm}
+    \end{center}
+\end{titlepage}
+
+\section{Data Preprocessing}
+\subsection{Data Loading}
+The dataset used for this assignment is the Sentiment140 dataset. The dataset contains 1.6 million tweets with 6 fields. The fields are sentiment, ids, date, flag, user, and text, of which 2 are relevant for this project:sentiment and text. The sentiment field is the sentiment of the tweet, which has 2 values, 0 and 4 representing a negative and positive sentiment respectively. Neutral tweets are not present in the data and thus are not considered for this project. The text field contains the tweet itself.
+
+The size of 1.6 million tweets was too large to process with the limitations of Google Colab, so a subset of 200,000 tweets was used. The dataset was loaded into a pandas dataframe and the sentiment and text fields were extracted. The sentiment field was converted to a binary value, 0 for negative and 1 for positive.
+
+\subsection{Data Cleaning}
+\subsubsection{Data Removal}
+The text field was cleaned by removing any special characters (and emoticons), numbers, mentions (@person), and hyperlinks. The text was then tokenized and converted to lowercase.
+
+\subsubsection{Lemmatization and Stopword Removal}
+The text was then lemmatized and stopwords were removed. We used NLTK for lemmatization and stopwords removal.
+
+\subsubsection{Tokenization and padding}
+The text was then tokenized and converted to sequences. The sequences were then padded to a maximum length of 100. The tokenizer was only fit on the training set to prevent data leakage.
+
+\subsection{Data Splitting}
+The dataset was split into training and testing sets with a 80/20 split. The training set was then split into training and validation sets with a 80/20 split. The splits were stratified to ensure that the distribution of the classes was the same in the training, validation, and testing sets.
+
+\section{Model Building}
+Since we are doing a comparison between LSTM and GRU, we built 2 models, one with LSTM and one with GRU.
+The entire models follow the same architecture, with the only difference being the LSTM and GRU layers.
+
+Both models have an embedding layer, followed by a spatial dropout layer, and then conv1d layer. The conv1d layer is followed by the LSTM or GRU layer, and then a dense layer with 512 units and a relu activation function. The dense layer is followed by a dropout layer with a dropout rate of 0.5. The model is then followed by another dense layer with 512 units and a relu activation function. The final layer is a dense layer with 1 unit and a sigmoid activation function.
+
+\subsection{Embedding Layer}
+The embedding layer was initialized with GloVe embeddings. The GloVe embeddings were loaded into a dictionary and the embedding matrix was created using the tokenizer word index. The embedding layer was then set to non-trainable. We used the 100-dimensional GloVe embeddings.
+
+\subsection{LSTM Layer}
+The LSTM layer has 100 units and a dropout of 0.2. The learning rate was set to 0.001. The model was compiled with binary cross-entropy loss and the Adam optimizer. The model was trained for 5 epochs with a batch size of 128.
+
+\subsection{GRU Layer}
+The GRU layer has 100 units and a dropout of 0.2. The learning rate was set to 0.001. The model was compiled with binary cross-entropy loss and the Adam optimizer. The model was trained for 5 epochs with a batch size of 128.
+
+\section{Model Evaluation}
+The models were evaluated on the test set using accuracy, precision, recall, and F1-score.
+
+\subsection{LSTM Model Evaluation}
+The LSTM model achieved an accuracy of 0.78, precision of 0.77, recall of 0.79, F1-score of 0.78.
+
+\subsection{GRU Model Evaluation}
+The GRU model achieved an accuracy of 0.78, precision of 0.77, recall of 0.79, F1-score of 0.78.
+
+\section{Results}
+\begin{table}[!htb]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+        \textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-score} \\
+        \hline
+        LSTM           & 0.75              & 0.75               & 0.75            & 0.75              \\
+        GRU            & 0.74              & 0.74               & 0.74            & 0.74              \\
+        \hline
+    \end{tabular}
+    \caption{Model Evaluation Results}
+    \label{tab:results}
+\end{table}
+
+\begin{table}[!htb]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Actual/Predicted} & \textbf{Negative} & \textbf{Positive} \\
+        \hline
+        Negative                  & 2996              & 1004              \\
+        Positive                  & 1004              & 2996              \\
+        \hline
+    \end{tabular}
+    \caption{Confusion Matrix for LSTM Model}
+    \label{tab:confusion_lstm}
+\end{table}
+
+\begin{table}[!htb]
+    \centering
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Actual/Predicted} & \textbf{Negative} & \textbf{Positive} \\
+        \hline
+        Negative                  & 2953              & 1047              \\
+        Positive                  & 995               & 3005              \\
+        \hline
+    \end{tabular}
+    \caption{Confusion Matrix for GRU Model}
+    \label{tab:confusion_gru}
+\end{table}
+
+
+\section{Conclusion}
+In this assignment, we compared the performance of LSTM and GRU on the Sentiment140 dataset. Both models achieved similar results with the LSTM performing slightly better than the GRU.
+
+The LSTM model achieved an accuracy of 0.75, precision of 0.75, recall of 0.75, and F1-score of 0.75. The GRU model achieved an accuracy of 0.74, precision of 0.74, recall of 0.74, and F1-score of 0.74. The confusion matrices for both models are shown in Table \ref{tab:confusion_lstm} and Table \ref{tab:confusion_gru}.
+
+A notable observation is that though both models achieved similar results, the LSTM model was consistent across both classes, while the GRU model correctly classified more positive tweets than negative tweets. This could be due to the architecture of the GRU model, which may be more suited to capturing the sentiment of positive tweets.
+
+This assignment demonstrates that both LSTM and GRU are effective in sentiment analysis tasks. However, the LSTM model performed slightly better than the GRU model on this dataset. Further experimentation with hyperparameters and architectures may yield better results for the GRU model.
+
+
+
+
+
+
+\end{document}

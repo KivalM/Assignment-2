@@ -1,0 +1,32 @@
+# ignore all the latex aux files
+*.aux
+*.bcf
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+*.xdv
+
+# ignore all the pdfs
+*.pdf
+
+# ignore all the generated files
+*.dvi
+*.ps
+*.synctex.gz
+*.synctex.gz(busy)
+*.synctex.gz(busy)*
+*.synctex.gz(busy)**
+
+# ignore csv files
+*.csv
